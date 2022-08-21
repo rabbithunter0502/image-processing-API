@@ -1,3 +1,4 @@
+## Image Processing API project
 ### Scripts
 - Install: ```npm install```
 - Start server: ```npm run start```
