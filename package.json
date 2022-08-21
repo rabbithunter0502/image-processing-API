@@ -11,7 +11,7 @@
     "test": "npm run build && npm run copy-template && npm run jasmine",
     "start": "nodemon src/index.ts",
     "lint": "eslint . --ext .ts ",
-    "prettify": "prettier --config .prettierrc.json src/**/*.{ts,tsx,js,jsx} --write"
+    "prettier": "prettier --config .prettierrc.json src/**/*.{ts,tsx,js,jsx} --write"
   },
   "author": "rabbithunter0502",
   "keywords": [],

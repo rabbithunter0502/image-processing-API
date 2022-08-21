@@ -1,5 +1,5 @@
 export interface IImageQuery {
-    imageName?: string;
-    width?: string;
-    height?: string;
+  imageName?: string;
+  width?: string;
+  height?: string;
 }

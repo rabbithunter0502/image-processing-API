@@ -1,8 +1,8 @@
 import supertest from 'supertest';
-import {promises as fs} from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
-import {imagesResizePath} from "../../utils/image-helper";
-import app from "../../index";
+import { imagesResizePath } from '../../utils/image-helper';
+import app from '../../index';
 
 const request = supertest(app);
 
@@ -34,7 +34,9 @@ describe('Image Process controller', (): void => {
     it('should return error string when get /image-process', async (): Promise<void> => {
       const response: supertest.Response = await request.get('/image-process');
 
-      expect(response.text).toBe('There is an invalid \'imageName\', please check available images at home page');
+      expect(response.text).toBe(
+        "There is an invalid 'imageName', please check available images at home page"
+      );
     });
   });
 

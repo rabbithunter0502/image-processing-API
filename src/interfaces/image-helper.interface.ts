@@ -1,12 +1,11 @@
-import {IImageQuery} from "./image-query.interface";
+import { IImageQuery } from './image-query.interface';
 
 export interface IImageHelper {
+  getImagePath(queryParams: IImageQuery): Promise<null | string>;
 
-    getImagePath(queryParams: IImageQuery): Promise<null | string>;
+  isImageAvailable(imageName: string): Promise<boolean>;
 
-    isImageAvailable(imageName: string): Promise<boolean>;
+  isResizeImageAvailable(queryParams: IImageQuery): Promise<boolean>;
 
-    isResizeImageAvailable(queryParams: IImageQuery): Promise<boolean>;
-
-    resizeImage(queryParams: IImageQuery): Promise<null | string>;
+  resizeImage(queryParams: IImageQuery): Promise<null | string>;
 }

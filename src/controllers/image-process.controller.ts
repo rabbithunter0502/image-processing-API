@@ -1,6 +1,6 @@
-import express, {Router, Request, Response} from 'express';
+import express, { Router, Request, Response } from 'express';
 import * as ImageHelper from './../utils/image-helper';
-import {IImageQuery} from '../interfaces/image-query.interface';
+import { IImageQuery } from '../interfaces/image-query.interface';
 
 const checkQueryParams = async (query: IImageQuery): Promise<null | string> => {
   if (!(await ImageHelper.isImageAvailable(query.imageName))) {
@@ -13,12 +13,12 @@ const checkQueryParams = async (query: IImageQuery): Promise<null | string> => {
 
   const width: number = parseInt(query.width || '');
   if (Number.isNaN(width) || width < 1) {
-    return "There is an invalid number, please provide a positive numerical";
+    return 'There is an invalid number, please provide a positive numerical';
   }
 
   const height: number = parseInt(query.height || '');
   if (Number.isNaN(height) || height < 1) {
-    return "There is an invalid number, please provide a positive numerical";
+    return 'There is an invalid number, please provide a positive numerical';
   }
 
   return null;
@@ -28,10 +28,7 @@ const imageProcessController = Router();
 
 imageProcessController.get(
   '/',
-  async (
-    request: Request,
-    response: Response
-  ): Promise<void> => {
+  async (request: Request, response: Response): Promise<void> => {
     const validationMessage = await checkQueryParams(request.query);
     if (validationMessage) {
       response.send(validationMessage);
