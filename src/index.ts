@@ -1,9 +1,12 @@
 import express from 'express';
 import routes from './routes';
 import * as path from 'path';
+import dotenv from 'dotenv';
 
 const app = express();
-const port = process.env.port || 3000;
+dotenv.config();
+
+const port = process.env.PORT || 3000;
 
 // Setup public path
 app.use('/public', express.static(path.join(__dirname, 'public')));
