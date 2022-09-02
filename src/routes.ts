@@ -1,5 +1,4 @@
 import { Application, Router } from 'express';
-import ImageProcessApi from './controllers/image-process.controller';
 import homeController from './controllers/home.controller';
 import imageProcessController from './controllers/image-process.controller';
 

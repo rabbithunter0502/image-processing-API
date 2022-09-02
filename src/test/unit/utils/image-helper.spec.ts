@@ -1,55 +1,45 @@
-import { promises as fs } from 'fs';
+import {promises as fs} from 'fs';
 import path from 'path';
-import * as ImageHelper from './../../utils/image-helper';
-import {
-  getImagePath,
-  imagesResizePath,
-  isImageAvailable,
-  isResizeImageAvailable
-} from './../../utils/image-helper';
-import supertest from 'supertest';
-import app from '../../index';
-import { parse } from 'querystring';
+import imageHelper from 'utils/image-helper';
+import {parse} from 'querystring';
 
-const request = supertest(app);
-
-describe('ImageHelper', (): void => {
-  describe('ImageHelper: getImagePath function', (): void => {
+describe('ImageHelper: ', (): void => {
+  describe('ImageHelper: getImagePath function:', (): void => {
     it('should return null for invalid image name', async (): Promise<void> => {
       const queryParams = 'imageName=&width=50&height=50';
-      const error = await ImageHelper.getImagePath(parse(queryParams));
+      const error = await imageHelper.getImagePath(parse(queryParams));
       expect(error).toBeNull();
     });
 
     it('should return true for valid image name', async (): Promise<void> => {
       const queryParams = 'imageName=fjord&width=50&height=50';
-      await ImageHelper.resizeImage(parse(queryParams));
-      const error = await ImageHelper.getImagePath(parse(queryParams));
+      await imageHelper.updateImageSize(parse(queryParams));
+      const error = await imageHelper.getImagePath(parse(queryParams));
       expect(error).toBeTruthy();
     });
   });
 
-  describe('ImageHelper: isImageAvailable function', (): void => {
+  describe('ImageHelper: isImageAvailable function:', (): void => {
     it('should return false for invalid image name', async (): Promise<void> => {
       const imageName = 'imageName';
-      const error = await ImageHelper.isImageAvailable(imageName);
+      const error = await imageHelper.isImageAvailable(imageName);
       expect(error).toBeFalse();
     });
 
     it('should return true for valid image name', async (): Promise<void> => {
       const imageName = 'fjord';
-      const error = await ImageHelper.isImageAvailable(imageName);
+      const error = await imageHelper.isImageAvailable(imageName);
       expect(error).toBeTrue();
     });
   });
 
-  describe('ImageHelper: isResizeImageAvailable function', (): void => {
+  describe('ImageHelper: isResizeImageAvailable function:', (): void => {
     it('should return false for missing width', async (): Promise<void> => {
       const queryParams = {
         imageName: 'fjord',
         height: '50'
       };
-      const isResizeImageAvailable = await ImageHelper.isResizeImageAvailable(
+      const isResizeImageAvailable = await imageHelper.isResizeImageAvailable(
         queryParams
       );
 
@@ -61,7 +51,7 @@ describe('ImageHelper', (): void => {
         imageName: 'fjord',
         width: '50'
       };
-      const isResizeImageAvailable = await ImageHelper.isResizeImageAvailable(
+      const isResizeImageAvailable = await imageHelper.isResizeImageAvailable(
         queryParams
       );
 
@@ -73,7 +63,7 @@ describe('ImageHelper', (): void => {
         width: '50',
         height: '50'
       };
-      const isResizeImageAvailable = await ImageHelper.isResizeImageAvailable(
+      const isResizeImageAvailable = await imageHelper.isResizeImageAvailable(
         queryParams
       );
 
@@ -86,8 +76,8 @@ describe('ImageHelper', (): void => {
         width: '50',
         height: '50'
       };
-      await ImageHelper.resizeImage(queryParams);
-      const isResizeImageAvailable = await ImageHelper.isResizeImageAvailable(
+      await imageHelper.updateImageSize(queryParams);
+      const isResizeImageAvailable = await imageHelper.isResizeImageAvailable(
         queryParams
       );
 
@@ -95,14 +85,14 @@ describe('ImageHelper', (): void => {
     });
   });
 
-  describe('ImageHelper: resizeImage function', (): void => {
+  describe('ImageHelper: updateImageSize function:', (): void => {
     it('should return null for invalid width', async (): Promise<void> => {
       const queryParams = {
         imageName: 'fjord',
         width: '-50',
         height: '50'
       };
-      const error = await ImageHelper.resizeImage(queryParams);
+      const error = await imageHelper.updateImageSize(queryParams);
       expect(error).not.toBeNull();
     });
 
@@ -112,7 +102,7 @@ describe('ImageHelper', (): void => {
         width: '50',
         height: '-50'
       };
-      const error = await ImageHelper.resizeImage(queryParams);
+      const error = await imageHelper.updateImageSize(queryParams);
       expect(error).not.toBeNull();
     });
 
@@ -122,7 +112,7 @@ describe('ImageHelper', (): void => {
         width: '50',
         height: '50'
       };
-      const error = await ImageHelper.resizeImage(queryParams);
+      const error = await imageHelper.updateImageSize(queryParams);
       expect(error).not.toBeNull();
     });
 
@@ -132,12 +122,10 @@ describe('ImageHelper', (): void => {
         width: '50',
         height: '50'
       };
-      await ImageHelper.resizeImage(queryParams);
+      await imageHelper.updateImageSize(queryParams);
+      const imagesResizePath = '../../../public/images/resize';
 
-      const resizedImagePath = path.resolve(
-        imagesResizePath,
-        `fjord-50x50.jpg`
-      );
+      const resizedImagePath = path.resolve(__dirname, imagesResizePath, `fjord-50x50.jpg`);
       let errorFile = null;
 
       try {
@@ -152,7 +140,7 @@ describe('ImageHelper', (): void => {
 });
 // Clear test file
 afterAll(async (): Promise<void> => {
-  const resizedImagePath = path.resolve(imagesResizePath, `fjord-50x50.jpg`);
+  const resizedImagePath = path.resolve(__dirname, imageHelper.imagesResizePath, `fjord-50x50.jpg`);
   try {
     await fs.access(resizedImagePath);
     await fs.unlink(resizedImagePath);

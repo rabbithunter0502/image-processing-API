@@ -1,9 +1,9 @@
-import express, { Router, Request, Response } from 'express';
-import * as ImageHelper from './../utils/image-helper';
-import { IImageQuery } from '../interfaces/image-query.interface';
+import {Request, Response, Router} from 'express';
+import imageHelper from 'utils/image-helper';
+import {IImageQuery} from 'interfaces/image-query.interface';
 
 const checkQueryParams = async (query: IImageQuery): Promise<null | string> => {
-  if (!(await ImageHelper.isImageAvailable(query.imageName))) {
+  if (!(await imageHelper.isImageAvailable(query.imageName))) {
     return `There is an invalid 'imageName', please check available images at home page`;
   }
 
@@ -37,8 +37,8 @@ imageProcessController.get(
 
     let error = null;
 
-    if (!(await ImageHelper.isResizeImageAvailable(request.query))) {
-      error = await ImageHelper.resizeImage(request.query);
+    if (!(await imageHelper.isResizeImageAvailable(request.query))) {
+      error = await imageHelper.updateImageSize(request.query);
     }
 
     if (error) {
@@ -46,7 +46,7 @@ imageProcessController.get(
       return;
     }
 
-    const path = await ImageHelper.getImagePath(request.query);
+    const path = await imageHelper.getImagePath(request.query);
     if (path) {
       response.sendFile(path);
     } else {

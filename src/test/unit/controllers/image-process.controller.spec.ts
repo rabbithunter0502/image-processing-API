@@ -1,8 +1,8 @@
 import supertest from 'supertest';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { imagesResizePath } from '../../utils/image-helper';
-import app from '../../index';
+import imageHelper from 'utils/image-helper';
+import app from 'app/index';
 
 const request = supertest(app);
 
@@ -51,7 +51,7 @@ describe('Image Process controller', (): void => {
 
 // Clear test file
 afterAll(async (): Promise<void> => {
-  const resizedImagePath = path.resolve(imagesResizePath, `fjord-50x50.jpg`);
+  const resizedImagePath = path.resolve(__dirname, imageHelper.imagesResizePath, `fjord-50x50.jpg`);
   try {
     await fs.access(resizedImagePath);
     await fs.unlink(resizedImagePath);

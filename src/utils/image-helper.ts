@@ -1,19 +1,13 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import sharp from 'sharp';
-import { IImageQuery } from '../interfaces/image-query.interface';
+import { IImageQuery } from 'interfaces/image-query.interface';
 
-export const imagesOriginSizePath = path.resolve(
-  __dirname,
-  '../public/images/origin'
-);
+export const IMAGE_ORIGIN_PATH = '../public/images/origin';
 
-export const imagesResizePath = path.resolve(
-  __dirname,
-  '../public/images/resize'
-);
+export const IMAGE_RESIZE_PATH = '../public/images/resize';
 
-export const getImagePath = async (
+const getImagePath = async (
   queryParams: IImageQuery
 ): Promise<null | string> => {
   if (!queryParams.imageName) {
@@ -22,11 +16,11 @@ export const getImagePath = async (
 
   const imagePath =
     queryParams.width && queryParams.height
-      ? path.resolve(
-          imagesResizePath,
+      ? path.resolve(__dirname,
+          IMAGE_RESIZE_PATH,
           `${queryParams.imageName}-${queryParams.width}x${queryParams.height}.jpg`
         )
-      : path.resolve(imagesOriginSizePath, `${queryParams.imageName}.jpg`);
+      : path.resolve(__dirname, IMAGE_ORIGIN_PATH, `${queryParams.imageName}.jpg`);
   try {
     await fs.access(imagePath);
     return imagePath;
@@ -35,13 +29,14 @@ export const getImagePath = async (
   }
 };
 
-export const isImageAvailable = async (imageName = ''): Promise<boolean> => {
+const isImageAvailable = async (imageName = ''): Promise<boolean> => {
   if (!imageName) {
     return false;
   }
   let existImages: string[];
   try {
-    existImages = (await fs.readdir(imagesOriginSizePath)).map(
+    const imagePath = path.resolve(__dirname, IMAGE_ORIGIN_PATH);
+    existImages = (await fs.readdir(imagePath)).map(
       (filename: string): string => filename.split('.')[0]
     );
   } catch {
@@ -51,15 +46,15 @@ export const isImageAvailable = async (imageName = ''): Promise<boolean> => {
   return existImages.includes(imageName);
 };
 
-export const isResizeImageAvailable = async (
+const isResizeImageAvailable = async (
   queryParams: IImageQuery
 ): Promise<boolean> => {
   if (!queryParams.imageName || !queryParams.width || !queryParams.height) {
     return false;
   }
 
-  const imagePath: string = path.resolve(
-    imagesResizePath,
+  const imagePath: string = path.resolve(__dirname,
+    IMAGE_RESIZE_PATH,
     `${queryParams.imageName}-${queryParams.width}x${queryParams.height}.jpg`
   );
 
@@ -71,19 +66,19 @@ export const isResizeImageAvailable = async (
   }
 };
 
-export const resizeImage = async (
+const updateImageSize = async (
   queryParams: IImageQuery
 ): Promise<null | string> => {
   if (!queryParams.imageName || !queryParams.width || !queryParams.height) {
     return null;
   }
 
-  const source = path.resolve(
-    imagesOriginSizePath,
+  const source = path.resolve(__dirname,
+    IMAGE_ORIGIN_PATH,
     `${queryParams.imageName}.jpg`
   );
-  const target = path.resolve(
-    imagesResizePath,
+  const target = path.resolve(__dirname,
+    IMAGE_RESIZE_PATH,
     `${queryParams.imageName}-${queryParams.width}x${queryParams.height}.jpg`
   );
   const width = parseInt(queryParams.width);
@@ -96,10 +91,13 @@ export const resizeImage = async (
     return 'Image could not be resized.';
   }
 };
-
-export default {
+const imageHelper = {
   getImagePath,
   isImageAvailable,
   isResizeImageAvailable,
-  resizeImage
+  updateImageSize,
+  imagesOriginSizePath: IMAGE_ORIGIN_PATH,
+  imagesResizePath: IMAGE_RESIZE_PATH
 };
+
+export default imageHelper;

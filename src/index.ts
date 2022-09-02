@@ -1,6 +1,5 @@
 import express from 'express';
 import routes from './routes';
-import ImageHelper from './utils/image-helper';
 import * as path from 'path';
 
 const app = express();

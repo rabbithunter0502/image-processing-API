@@ -1,5 +1,5 @@
 import supertest from 'supertest';
-import app from '../../index';
+import app from 'app/index';
 const request = supertest(app);
 
 describe('Home controller', (): void => {
