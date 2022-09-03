@@ -13,7 +13,7 @@ The server be served on port 3001:
 http://localhost:3001/image-process
 
 Expected query arguments are:
-- _imageName_:
+- _default imageName_:
   - encenadaport
   - encenadaport
   - icelandwaterfall
@@ -21,7 +21,7 @@ Expected query arguments are:
   - santamonica
 - _width_: valid numerical value > 0
 - _height_: valid numerical value > 0
-
+- user can click on big image to resize image
 #### Example 1
 http://localhost:3000
 Will display project description and images gallery
