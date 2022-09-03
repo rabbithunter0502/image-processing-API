@@ -7,7 +7,7 @@ const routeArray: [string, Router][] = [
   ['/image-process', imageProcessController]
 ];
 
-const routes = (app: Application) => {
+const routes = (app: Application): void => {
   routeArray.forEach(route => {
     const [url, controller] = route;
     app.use(url, controller);

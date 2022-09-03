@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs';
+import * as fileSys from 'fs';
 import path from 'path';
 import sharp from 'sharp';
 import { IImageQuery } from 'interfaces/image-query.interface';
@@ -16,11 +17,16 @@ const getImagePath = async (
 
   const imagePath =
     queryParams.width && queryParams.height
-      ? path.resolve(__dirname,
+      ? path.resolve(
+          __dirname,
           IMAGE_RESIZE_PATH,
           `${queryParams.imageName}-${queryParams.width}x${queryParams.height}.jpg`
         )
-      : path.resolve(__dirname, IMAGE_ORIGIN_PATH, `${queryParams.imageName}.jpg`);
+      : path.resolve(
+          __dirname,
+          IMAGE_ORIGIN_PATH,
+          `${queryParams.imageName}.jpg`
+        );
   try {
     await fs.access(imagePath);
     return imagePath;
@@ -46,6 +52,17 @@ const isImageAvailable = async (imageName = ''): Promise<boolean> => {
   return existImages.includes(imageName);
 };
 
+const getExistOriginImages = async (): Promise<string[]> => {
+  let existImages: string[];
+  try {
+    const imagePath = path.resolve(__dirname, IMAGE_ORIGIN_PATH);
+    existImages = await fs.readdir(imagePath);
+  } catch {
+    existImages = [];
+  }
+  return existImages;
+};
+
 const isResizeImageAvailable = async (
   queryParams: IImageQuery
 ): Promise<boolean> => {
@@ -53,7 +70,8 @@ const isResizeImageAvailable = async (
     return false;
   }
 
-  const imagePath: string = path.resolve(__dirname,
+  const imagePath: string = path.resolve(
+    __dirname,
     IMAGE_RESIZE_PATH,
     `${queryParams.imageName}-${queryParams.width}x${queryParams.height}.jpg`
   );
@@ -73,11 +91,13 @@ const updateImageSize = async (
     return null;
   }
 
-  const source = path.resolve(__dirname,
+  const source = path.resolve(
+    __dirname,
     IMAGE_ORIGIN_PATH,
     `${queryParams.imageName}.jpg`
   );
-  const target = path.resolve(__dirname,
+  const target = path.resolve(
+    __dirname,
     IMAGE_RESIZE_PATH,
     `${queryParams.imageName}-${queryParams.width}x${queryParams.height}.jpg`
   );
@@ -91,11 +111,29 @@ const updateImageSize = async (
     return 'Image could not be resized.';
   }
 };
+
+const uploadImage = (
+  tempPath: string,
+  targetPath: string,
+  successCallBack: () => void,
+  errorCallBack: () => void
+): void => {
+  const source = fileSys.createReadStream(tempPath);
+  const destination = fileSys.createWriteStream(targetPath);
+  source.pipe(destination);
+  source.on('end', function () {
+    fileSys.unlink(tempPath, successCallBack);
+  });
+  source.on('error', errorCallBack);
+};
+
 const imageHelper = {
   getImagePath,
   isImageAvailable,
   isResizeImageAvailable,
   updateImageSize,
+  uploadImage,
+  getExistOriginImages,
   imagesOriginSizePath: IMAGE_ORIGIN_PATH,
   imagesResizePath: IMAGE_RESIZE_PATH
 };

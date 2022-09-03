@@ -1,5 +1,6 @@
 import supertest from 'supertest';
 import { promises as fs } from 'fs';
+import * as fileSystem from 'fs';
 import path from 'path';
 import imageHelper from 'utils/image-helper';
 import app from 'app/index';
@@ -47,11 +48,34 @@ describe('Image Process controller', (): void => {
       expect(response.text).toContain('Cannot GET');
     });
   });
+
+  describe('endpoint: / and method is used to upload image', (): void => {
+    it('should return 200 and re-render homage when image uploaded', async () => {
+      const testPath = path.resolve(
+        __dirname,
+        '../../../public/images/origin/th.jpg'
+      );
+      const response: supertest.Response = await request
+        .post('/image-process')
+        .set('content-type', 'multipart/form-data')
+        .attach('image', fileSystem.readFileSync(testPath));
+      expect(response.status).toBe(200);
+    });
+
+    it('should return false', async () => {
+      const response: supertest.Response = await request.post('/image-process');
+      expect(response.body['success']).toBeFalse();
+    });
+  });
 });
 
 // Clear test file
 afterAll(async (): Promise<void> => {
-  const resizedImagePath = path.resolve(__dirname, imageHelper.imagesResizePath, `fjord-50x50.jpg`);
+  const resizedImagePath = path.resolve(
+    __dirname,
+    imageHelper.imagesResizePath,
+    `fjord-50x50.jpg`
+  );
   try {
     await fs.access(resizedImagePath);
     await fs.unlink(resizedImagePath);

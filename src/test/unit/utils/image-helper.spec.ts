@@ -1,7 +1,7 @@
-import {promises as fs} from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 import imageHelper from 'utils/image-helper';
-import {parse} from 'querystring';
+import { parse } from 'querystring';
 
 describe('ImageHelper: ', (): void => {
   describe('ImageHelper: getImagePath function:', (): void => {
@@ -125,7 +125,11 @@ describe('ImageHelper: ', (): void => {
       await imageHelper.updateImageSize(queryParams);
       const imagesResizePath = '../../../public/images/resize';
 
-      const resizedImagePath = path.resolve(__dirname, imagesResizePath, `fjord-50x50.jpg`);
+      const resizedImagePath = path.resolve(
+        __dirname,
+        imagesResizePath,
+        `fjord-50x50.jpg`
+      );
       let errorFile = null;
 
       try {
@@ -140,7 +144,11 @@ describe('ImageHelper: ', (): void => {
 });
 // Clear test file
 afterAll(async (): Promise<void> => {
-  const resizedImagePath = path.resolve(__dirname, imageHelper.imagesResizePath, `fjord-50x50.jpg`);
+  const resizedImagePath = path.resolve(
+    __dirname,
+    imageHelper.imagesResizePath,
+    `fjord-50x50.jpg`
+  );
   try {
     await fs.access(resizedImagePath);
     await fs.unlink(resizedImagePath);
